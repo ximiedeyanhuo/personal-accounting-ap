@@ -66,6 +66,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        // v1: destructive upgrade acceptable. From v2+, implement incremental migrations
+        // with data preservation (ALTER TABLE, data copy, etc.)
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TRANSACTIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_CATEGORIES")
         onCreate(db)

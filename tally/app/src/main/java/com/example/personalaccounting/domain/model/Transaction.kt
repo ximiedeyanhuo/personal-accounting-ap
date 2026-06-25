@@ -13,8 +13,3 @@ data class Transaction(
     val createdAt: LocalDateTime = LocalDateTime.now(),
     val updatedAt: LocalDateTime = LocalDateTime.now()
 )
-
-enum class TransactionType {
-    INCOME,
-    EXPENSE
-}
