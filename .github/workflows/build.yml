@@ -28,11 +28,11 @@ jobs:
       run: chmod +x tally/gradlew
 
     - name: Build Debug APK
-      run: |
-        cd tally
-        ./gradlew assembleDebug
+      working-directory: tally
+      run: ./gradlew assembleDebug --stacktrace 2>&1
 
     - name: Upload APK artifact
+      if: success()
       uses: actions/upload-artifact@v4
       with:
         name: app-debug
