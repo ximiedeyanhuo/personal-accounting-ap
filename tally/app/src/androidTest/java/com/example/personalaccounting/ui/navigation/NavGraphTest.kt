@@ -15,6 +15,6 @@ class NavGraphTest {
             val navController = rememberNavController()
             NavGraph(navController = navController)
         }
-        // Just verify it doesn't crash
+        composeTestRule.waitForIdle()
     }
 }

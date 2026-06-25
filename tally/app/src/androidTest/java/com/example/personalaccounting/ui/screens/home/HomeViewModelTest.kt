@@ -12,8 +12,11 @@ import com.example.personalaccounting.domain.model.Category
 import com.example.personalaccounting.domain.model.Transaction
 import com.example.personalaccounting.domain.model.TransactionType
 import com.example.personalaccounting.domain.service.StatisticsService
+import com.example.personalaccounting.rule.MainDispatcherRule
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
@@ -21,6 +24,9 @@ import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class HomeViewModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var viewModel: HomeViewModel
     private lateinit var transactionRepository: TransactionRepository
@@ -59,7 +65,7 @@ class HomeViewModelTest {
     }
     
     @Test
-    fun testLoadTransactions() {
+    fun testLoadTransactions() = runTest {
         val transaction = Transaction(
             amount = 100.0,
             type = TransactionType.EXPENSE,
@@ -70,12 +76,13 @@ class HomeViewModelTest {
         transactionRepository.add(transaction)
         
         viewModel.loadTransactions()
+        mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         
         assertEquals(1, viewModel.transactions.value.size)
     }
     
     @Test
-    fun testLoadMonthlySummary() {
+    fun testLoadMonthlySummary() = runTest {
         val transaction = Transaction(
             amount = 100.0,
             type = TransactionType.EXPENSE,
@@ -86,6 +93,7 @@ class HomeViewModelTest {
         transactionRepository.add(transaction)
         
         viewModel.loadMonthlySummary()
+        mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
         
         assertEquals(100.0, viewModel.monthlySummary.value?.totalExpense)
     }

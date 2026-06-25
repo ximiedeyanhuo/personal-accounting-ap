@@ -12,8 +12,11 @@ import com.example.personalaccounting.domain.model.Category
 import com.example.personalaccounting.domain.model.Transaction
 import com.example.personalaccounting.domain.model.TransactionType
 import com.example.personalaccounting.domain.service.StatisticsService
+import com.example.personalaccounting.rule.MainDispatcherRule
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
@@ -21,6 +24,9 @@ import kotlin.test.assertEquals
 
 @RunWith(AndroidJUnit4::class)
 class StatisticsViewModelTest {
+    @get:Rule
+    val mainDispatcherRule = MainDispatcherRule()
+
     private lateinit var dbHelper: DatabaseHelper
     private lateinit var viewModel: StatisticsViewModel
     private lateinit var statisticsService: StatisticsService
@@ -64,8 +70,9 @@ class StatisticsViewModelTest {
     }
 
     @Test
-    fun testLoadCategoryExpenses() {
+    fun testLoadCategoryExpenses() = runTest {
         viewModel.loadCategoryExpenses()
+        mainDispatcherRule.testDispatcher.scheduler.advanceUntilIdle()
 
         assertEquals(1, viewModel.categoryExpenses.value.size)
         assertEquals(100.0, viewModel.categoryExpenses.value[0].totalAmount)
