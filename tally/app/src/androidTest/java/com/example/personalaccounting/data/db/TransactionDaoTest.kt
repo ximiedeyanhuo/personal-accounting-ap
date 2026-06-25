@@ -113,4 +113,37 @@ class TransactionDaoTest {
         assertEquals(1, rows)
         assertTrue(transactionDao.getById(id) == null)
     }
+
+    @Test
+    fun testGetByDateRange() {
+        val today = LocalDate.now()
+        val tomorrow = today.plusDays(1)
+        val yesterday = today.minusDays(1)
+
+        val t1 = Transaction(amount = 10.0, type = TransactionType.EXPENSE, categoryId = testCategoryId, date = yesterday)
+        val t2 = Transaction(amount = 20.0, type = TransactionType.EXPENSE, categoryId = testCategoryId, date = today)
+        val t3 = Transaction(amount = 30.0, type = TransactionType.EXPENSE, categoryId = testCategoryId, date = tomorrow)
+        transactionDao.insert(t1)
+        transactionDao.insert(t2)
+        transactionDao.insert(t3)
+
+        val result = transactionDao.getByDateRange(yesterday, today)
+        assertEquals(2, result.size)
+        assertTrue(result.all { it.date in listOf(yesterday, today) })
+    }
+
+    @Test
+    fun testGetByType() {
+        val t1 = Transaction(amount = 10.0, type = TransactionType.EXPENSE, categoryId = testCategoryId, date = LocalDate.now())
+        val t2 = Transaction(amount = 20.0, type = TransactionType.INCOME, categoryId = testCategoryId, date = LocalDate.now())
+        transactionDao.insert(t1)
+        transactionDao.insert(t2)
+
+        val expenses = transactionDao.getByType(TransactionType.EXPENSE)
+        val incomes = transactionDao.getByType(TransactionType.INCOME)
+        assertEquals(1, expenses.size)
+        assertEquals(TransactionType.EXPENSE, expenses[0].type)
+        assertEquals(1, incomes.size)
+        assertEquals(TransactionType.INCOME, incomes[0].type)
+    }
 }

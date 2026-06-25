@@ -15,15 +15,15 @@ class TransactionDao(private val dbHelper: DatabaseHelper) {
             put(DatabaseHelper.COLUMN_TRANSACTION_CATEGORY_ID, transaction.categoryId)
             put(DatabaseHelper.COLUMN_TRANSACTION_DATE, transaction.date.toString())
             put(DatabaseHelper.COLUMN_TRANSACTION_NOTE, transaction.note)
-            put(DatabaseHelper.COLUMN_TRANSACTION_CREATED_AT, transaction.createdAt.toString())
-            put(DatabaseHelper.COLUMN_TRANSACTION_UPDATED_AT, transaction.updatedAt.toString())
+            put(DatabaseHelper.COLUMN_TRANSACTION_CREATED_AT, LocalDateTime.now().toString())
+            put(DatabaseHelper.COLUMN_TRANSACTION_UPDATED_AT, LocalDateTime.now().toString())
         }
         return db.insert(DatabaseHelper.TABLE_TRANSACTIONS, null, values)
     }
 
     fun getById(id: Long): Transaction? {
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        return db.query(
             DatabaseHelper.TABLE_TRANSACTIONS,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_ID} = ?",
@@ -31,21 +31,15 @@ class TransactionDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             null
-        )
-
-        return if (cursor.moveToFirst()) {
-            cursorToTransaction(cursor)
-        } else {
-            null
-        }.also {
-            cursor.close()
+        ).use { cursor ->
+            if (cursor.moveToFirst()) cursorToTransaction(cursor) else null
         }
     }
 
     fun getAll(): List<Transaction> {
-        val transactions = mutableListOf<Transaction>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        val transactions = mutableListOf<Transaction>()
+        db.query(
             DatabaseHelper.TABLE_TRANSACTIONS,
             null,
             null,
@@ -53,19 +47,18 @@ class TransactionDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_DATE} DESC"
-        )
-
-        while (cursor.moveToNext()) {
-            transactions.add(cursorToTransaction(cursor))
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                transactions.add(cursorToTransaction(cursor))
+            }
         }
-        cursor.close()
         return transactions
     }
 
     fun getByDateRange(startDate: LocalDate, endDate: LocalDate): List<Transaction> {
-        val transactions = mutableListOf<Transaction>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        val transactions = mutableListOf<Transaction>()
+        db.query(
             DatabaseHelper.TABLE_TRANSACTIONS,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_DATE} BETWEEN ? AND ?",
@@ -73,19 +66,18 @@ class TransactionDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_DATE} DESC"
-        )
-
-        while (cursor.moveToNext()) {
-            transactions.add(cursorToTransaction(cursor))
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                transactions.add(cursorToTransaction(cursor))
+            }
         }
-        cursor.close()
         return transactions
     }
 
     fun getByType(type: TransactionType): List<Transaction> {
-        val transactions = mutableListOf<Transaction>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        val transactions = mutableListOf<Transaction>()
+        db.query(
             DatabaseHelper.TABLE_TRANSACTIONS,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_TYPE} = ?",
@@ -93,12 +85,11 @@ class TransactionDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             "${DatabaseHelper.COLUMN_TRANSACTION_DATE} DESC"
-        )
-
-        while (cursor.moveToNext()) {
-            transactions.add(cursorToTransaction(cursor))
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                transactions.add(cursorToTransaction(cursor))
+            }
         }
-        cursor.close()
         return transactions
     }
 

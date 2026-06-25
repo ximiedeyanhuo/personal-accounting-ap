@@ -20,7 +20,7 @@ class CategoryDao(private val dbHelper: DatabaseHelper) {
 
     fun getById(id: Long): Category? {
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        return db.query(
             DatabaseHelper.TABLE_CATEGORIES,
             null,
             "${DatabaseHelper.COLUMN_CATEGORY_ID} = ?",
@@ -28,21 +28,15 @@ class CategoryDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             null
-        )
-
-        return if (cursor.moveToFirst()) {
-            cursorToCategory(cursor)
-        } else {
-            null
-        }.also {
-            cursor.close()
+        ).use { cursor ->
+            if (cursor.moveToFirst()) cursorToCategory(cursor) else null
         }
     }
 
     fun getAll(): List<Category> {
-        val categories = mutableListOf<Category>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        val categories = mutableListOf<Category>()
+        db.query(
             DatabaseHelper.TABLE_CATEGORIES,
             null,
             null,
@@ -50,19 +44,18 @@ class CategoryDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             "${DatabaseHelper.COLUMN_CATEGORY_NAME} ASC"
-        )
-
-        while (cursor.moveToNext()) {
-            categories.add(cursorToCategory(cursor))
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                categories.add(cursorToCategory(cursor))
+            }
         }
-        cursor.close()
         return categories
     }
 
     fun getByType(type: TransactionType): List<Category> {
-        val categories = mutableListOf<Category>()
         val db = dbHelper.readableDatabase
-        val cursor = db.query(
+        val categories = mutableListOf<Category>()
+        db.query(
             DatabaseHelper.TABLE_CATEGORIES,
             null,
             "${DatabaseHelper.COLUMN_CATEGORY_TYPE} = ?",
@@ -70,12 +63,11 @@ class CategoryDao(private val dbHelper: DatabaseHelper) {
             null,
             null,
             "${DatabaseHelper.COLUMN_CATEGORY_NAME} ASC"
-        )
-
-        while (cursor.moveToNext()) {
-            categories.add(cursorToCategory(cursor))
+        ).use { cursor ->
+            while (cursor.moveToNext()) {
+                categories.add(cursorToCategory(cursor))
+            }
         }
-        cursor.close()
         return categories
     }
 
