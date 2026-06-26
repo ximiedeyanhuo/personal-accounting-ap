@@ -2,8 +2,7 @@ package com.example.personalaccounting.ui.screens.addedit
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.personalaccounting.data.repository.CategoryRepository
-import com.example.personalaccounting.data.repository.TransactionRepository
+import com.example.personalaccounting.DIContainer
 import com.example.personalaccounting.domain.model.Category
 import com.example.personalaccounting.domain.model.Transaction
 import com.example.personalaccounting.domain.model.TransactionType
@@ -14,10 +13,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class AddEditTransactionViewModel(
-    private val transactionRepository: TransactionRepository,
-    private val categoryRepository: CategoryRepository
-) : ViewModel() {
+class AddEditTransactionViewModel : ViewModel() {
+
+    private val transactionRepository = DIContainer.getTransactionRepository()
+    private val categoryRepository = DIContainer.getCategoryRepository()
 
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> = _amount.asStateFlow()
@@ -102,7 +101,7 @@ class AddEditTransactionViewModel(
     fun saveTransaction() {
         val amountValue = _amount.value.toDoubleOrNull()
         if (amountValue == null || amountValue <= 0) {
-            _errorMessage.value = "Amount is required"
+            _errorMessage.value = "Amount is required and must be positive"
             return
         }
 

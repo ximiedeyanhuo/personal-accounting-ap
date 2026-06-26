@@ -14,6 +14,10 @@ import com.example.personalaccounting.ui.theme.PersonalAccountingTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Initialize dependency injection container
+        DIContainer.init(applicationContext)
+
         setContent {
             PersonalAccountingTheme {
                 Surface(

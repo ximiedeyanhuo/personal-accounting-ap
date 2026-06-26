@@ -2,20 +2,18 @@ package com.example.personalaccounting.ui.screens.statistics
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.personalaccounting.data.repository.CategoryRepository
+import com.example.personalaccounting.DIContainer
 import com.example.personalaccounting.domain.model.CategoryExpense
 import com.example.personalaccounting.domain.service.MonthlySummary
-import com.example.personalaccounting.domain.service.StatisticsService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
-class StatisticsViewModel(
-    private val statisticsService: StatisticsService,
-    private val categoryRepository: CategoryRepository
-) : ViewModel() {
+class StatisticsViewModel : ViewModel() {
+
+    private val statisticsService = DIContainer.getStatisticsService()
 
     private val _categoryExpenses = MutableStateFlow<List<CategoryExpense>>(emptyList())
     val categoryExpenses: StateFlow<List<CategoryExpense>> = _categoryExpenses.asStateFlow()

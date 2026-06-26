@@ -2,7 +2,7 @@ package com.example.personalaccounting.ui.screens.category
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.personalaccounting.data.repository.CategoryRepository
+import com.example.personalaccounting.DIContainer
 import com.example.personalaccounting.domain.model.Category
 import com.example.personalaccounting.domain.model.TransactionType
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,9 +10,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class CategoryManagementViewModel(
-    private val categoryRepository: CategoryRepository
-) : ViewModel() {
+class CategoryManagementViewModel : ViewModel() {
+
+    private val categoryRepository = DIContainer.getCategoryRepository()
 
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     val categories: StateFlow<List<Category>> = _categories.asStateFlow()
