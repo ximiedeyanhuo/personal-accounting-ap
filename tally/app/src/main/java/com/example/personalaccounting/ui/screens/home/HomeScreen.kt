@@ -1,6 +1,5 @@
 package com.example.personalaccounting.ui.screens.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,10 +17,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.personalaccounting.ui.components.TransactionItem
-import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.TreeMap
-import androidx.compose.foundation.ExperimentalFoundationApi
 
 private sealed class BottomNavItem(val route: String, val label: String, val icon: ImageVector) {
     object Home : BottomNavItem("home", "Home", Icons.Default.Home)
@@ -29,7 +25,6 @@ private sealed class BottomNavItem(val route: String, val label: String, val ico
     object Settings : BottomNavItem("settings", "Settings", Icons.Default.Settings)
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     onAddTransaction: () -> Unit,
@@ -43,7 +38,7 @@ fun HomeScreen(
     val transactions by viewModel.transactions.collectAsState()
     val monthlySummary by viewModel.monthlySummary.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
-    
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,9 +109,9 @@ fun HomeScreen(
                                 style = MaterialTheme.typography.h6,
                                 fontWeight = FontWeight.Bold
                             )
-                            
+
                             Spacer(modifier = Modifier.height(16.dp))
-                            
+
                             Row(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.SpaceBetween
@@ -133,7 +128,7 @@ fun HomeScreen(
                                         color = Color(0xFF4CAF50)
                                     )
                                 }
-                                
+
                                 Column {
                                     Text(
                                         text = "Expense",
@@ -146,7 +141,7 @@ fun HomeScreen(
                                         color = Color(0xFFF44336)
                                     )
                                 }
-                                
+
                                 Column {
                                     Text(
                                         text = "Balance",
@@ -163,38 +158,18 @@ fun HomeScreen(
                         }
                     }
                 }
-                
-                val groupedTransactions = transactions
-                    .groupBy { it.date }
-                    .toSortedMap(compareByDescending { it })
-                
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    groupedTransactions.forEach { (date, dateTransactions) ->
-                        stickyHeader {
-                            Surface(
-                                modifier = Modifier.fillMaxWidth(),
-                                color = MaterialTheme.colors.surface
-                            ) {
-                                Text(
-                                    text = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                    style = MaterialTheme.typography.subtitle2,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colors.onSurface.copy(alpha = 0.7f)
-                                )
-                            }
-                        }
-                        items(dateTransactions) { transaction ->
-                            val category = viewModel.getCategoryById(transaction.categoryId)
-                            TransactionItem(
-                                transaction = transaction,
-                                category = category,
-                                onTransactionClick = onEditTransaction
-                            )
-                            Divider()
-                        }
+                    items(transactions) { transaction ->
+                        val category = viewModel.getCategoryById(transaction.categoryId)
+                        TransactionItem(
+                            transaction = transaction,
+                            category = category,
+                            onTransactionClick = onEditTransaction
+                        )
+                        Divider()
                     }
                 }
             }

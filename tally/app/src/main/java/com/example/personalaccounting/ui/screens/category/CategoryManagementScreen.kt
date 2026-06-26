@@ -40,7 +40,7 @@ fun CategoryManagementScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -95,18 +95,22 @@ fun CategoryManagementScreen(
                             modifier = Modifier.fillMaxWidth(),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            FilterChip(
-                                selected = type == TransactionType.EXPENSE,
+                            OutlinedButton(
                                 onClick = { viewModel.updateType(TransactionType.EXPENSE) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = if (type == TransactionType.EXPENSE) ButtonDefaults.outlinedButtonColors(
+                                    backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1f)
+                                ) else ButtonDefaults.outlinedButtonColors()
                             ) {
                                 Text("Expense")
                             }
 
-                            FilterChip(
-                                selected = type == TransactionType.INCOME,
+                            OutlinedButton(
                                 onClick = { viewModel.updateType(TransactionType.INCOME) },
-                                modifier = Modifier.weight(1f)
+                                modifier = Modifier.weight(1f),
+                                colors = if (type == TransactionType.INCOME) ButtonDefaults.outlinedButtonColors(
+                                    backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1f)
+                                ) else ButtonDefaults.outlinedButtonColors()
                             ) {
                                 Text("Income")
                             }

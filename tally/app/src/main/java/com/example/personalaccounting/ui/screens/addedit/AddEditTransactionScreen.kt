@@ -6,15 +6,15 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.personalaccounting.domain.model.TransactionType
-import java.time.Instant
 import java.time.LocalDate
-import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -33,8 +33,6 @@ fun AddEditTransactionScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val isSuccess by viewModel.isSuccess.collectAsState()
 
-    var showDatePicker by remember { mutableStateOf(false) }
-
     LaunchedEffect(transactionId) {
         transactionId?.let {
             viewModel.loadTransaction(it)
@@ -48,39 +46,6 @@ fun AddEditTransactionScreen(
         }
     }
 
-    if (showDatePicker) {
-        val datePickerState = rememberDatePickerState(
-            initialSelectedDateMillis = date.atStartOfDay(ZoneId.systemDefault())
-                .toInstant().toEpochMilli()
-        )
-
-        DatePickerDialog(
-            onDismissRequest = { showDatePicker = false },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        datePickerState.selectedDateMillis?.let { millis ->
-                            val selectedDate = Instant.ofEpochMilli(millis)
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate()
-                            viewModel.updateDate(selectedDate)
-                        }
-                        showDatePicker = false
-                    }
-                ) {
-                    Text("OK")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) {
-                    Text("Cancel")
-                }
-            }
-        ) {
-            DatePicker(state = datePickerState)
-        }
-    }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -88,7 +53,7 @@ fun AddEditTransactionScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -131,18 +96,22 @@ fun AddEditTransactionScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    FilterChip(
-                        selected = type == TransactionType.EXPENSE,
+                    OutlinedButton(
                         onClick = { viewModel.updateType(TransactionType.EXPENSE) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = if (type == TransactionType.EXPENSE) ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1f)
+                        ) else ButtonDefaults.outlinedButtonColors()
                     ) {
                         Text("Expense")
                     }
 
-                    FilterChip(
-                        selected = type == TransactionType.INCOME,
+                    OutlinedButton(
                         onClick = { viewModel.updateType(TransactionType.INCOME) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        colors = if (type == TransactionType.INCOME) ButtonDefaults.outlinedButtonColors(
+                            backgroundColor = MaterialTheme.colors.primary.copy(alpha = 0.1f)
+                        ) else ButtonDefaults.outlinedButtonColors()
                     ) {
                         Text("Income")
                     }
@@ -163,7 +132,8 @@ fun AddEditTransactionScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable { viewModel.updateCategoryId(category.id) },
+                                .clickable { viewModel.updateCategoryId(category.id) }
+                                .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             RadioButton(
@@ -184,19 +154,11 @@ fun AddEditTransactionScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 OutlinedTextField(
-                    value = date.format(DateTimeFormatter.ofPattern("MMM dd, yyyy")),
+                    value = date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                     onValueChange = {},
                     label = { Text("Date") },
                     readOnly = true,
-                    modifier = Modifier.fillMaxWidth(),
-                    trailingIcon = {
-                        IconButton(onClick = { showDatePicker = true }) {
-                            Icon(
-                                imageVector = androidx.compose.material.icons.Icons.Default.DateRange,
-                                contentDescription = "Select Date"
-                            )
-                        }
-                    }
+                    modifier = Modifier.fillMaxWidth()
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))

@@ -10,7 +10,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.personalaccounting.domain.model.CategoryExpense
@@ -36,7 +35,7 @@ fun StatisticsScreen(
                 navigationIcon = {
                     IconButton(onClick = onNavigateBack) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back"
                         )
                     }
@@ -79,8 +78,7 @@ fun StatisticsScreen(
                     IconButton(onClick = { viewModel.nextMonth() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
-                            contentDescription = "Next Month",
-                            modifier = Modifier.graphicsLayer(rotationZ = 180f)
+                            contentDescription = "Next Month"
                         )
                     }
                 }
