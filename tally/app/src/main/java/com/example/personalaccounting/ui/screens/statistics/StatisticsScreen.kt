@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,7 +65,7 @@ fun StatisticsScreen(
                 ) {
                     IconButton(onClick = { viewModel.previousMonth() }) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Previous Month"
                         )
                     }
@@ -76,7 +78,7 @@ fun StatisticsScreen(
 
                     IconButton(onClick = { viewModel.nextMonth() }) {
                         Icon(
-                            imageVector = androidx.compose.material.icons.Icons.Default.ArrowBack,
+                            imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Next Month",
                             modifier = Modifier.graphicsLayer(rotationZ = 180f)
                         )

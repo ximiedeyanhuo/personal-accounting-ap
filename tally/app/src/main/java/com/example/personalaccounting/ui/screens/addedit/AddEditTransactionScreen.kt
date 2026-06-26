@@ -134,16 +134,18 @@ fun AddEditTransactionScreen(
                     FilterChip(
                         selected = type == TransactionType.EXPENSE,
                         onClick = { viewModel.updateType(TransactionType.EXPENSE) },
-                        label = { Text("Expense") },
                         modifier = Modifier.weight(1f)
-                    )
+                    ) {
+                        Text("Expense")
+                    }
 
                     FilterChip(
                         selected = type == TransactionType.INCOME,
                         onClick = { viewModel.updateType(TransactionType.INCOME) },
-                        label = { Text("Income") },
                         modifier = Modifier.weight(1f)
-                    )
+                    ) {
+                        Text("Income")
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

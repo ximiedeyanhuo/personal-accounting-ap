@@ -21,6 +21,7 @@ import com.example.personalaccounting.ui.components.TransactionItem
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.TreeMap
+import androidx.compose.foundation.ExperimentalFoundationApi
 
 private sealed class BottomNavItem(val route: String, val label: String, val icon: ImageVector) {
     object Home : BottomNavItem("home", "Home", Icons.Default.Home)
@@ -28,6 +29,7 @@ private sealed class BottomNavItem(val route: String, val label: String, val ico
     object Settings : BottomNavItem("settings", "Settings", Icons.Default.Settings)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     onAddTransaction: () -> Unit,
